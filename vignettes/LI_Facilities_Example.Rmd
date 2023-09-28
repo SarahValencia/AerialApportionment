@@ -1,0 +1,164 @@
+---
+title: "Using Aerial Apportionment to Assess Community Composition Near TRI Facilities: Long Island"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using Aerial Apportionment to Assess Community Composition Near TRI Facilities: Long Island}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(AerialApportionment)
+```
+
+## Obtaining Census Data
+
+Say we want to look at the community characteristics in areas near TRI reporting facilities on Long Island. To do this we need to obtain demographic data at the block group level. We can do using the GetCensusData function. We need to determine the spatial scale and time frame of the census data we need. We decide we are interested in the most recent 5 year American Community Survey dataset (ending in 2021) at the "block group" geography for the four counties on Long Island, and that we would like the data projected from the NAD83 coordinate system (lat/lon in degrees) to the WSG84 coordinate system in meters (EPSG=4269). 
+
+First we set our Census API key:
+
+```{r}
+census_api_key("your census API key here")
+```
+Then we create a vector of county names
+
+```{r}
+LICounties <- c("Kings", "Queens", "Nassau","Suffolk")
+```
+
+Finally, we need to determine which variables we are interested in. The tidycensus package includes the function load_variables, but the ACS collects information on thousands of different variables, and the variable codes are not consistent from survey to survey.
+
+```{r}
+ACSVars <- load_variables(year=2021,dataset = "acs5",cache=T)
+str(ACSVars)
+```
+
+#For this reason, it is helpful to use the CensusVariableSearch function to look up specific variable codes. We are interested in the racial make up of communities near TRI facilities, as well as their median income.
+
+```{r}
+RaceVars <- CensusVariableSearch(Yr=2021, dataset="acs5", variableCode = NULL, geog_var = "block group", conceptSearch = c("race"),labelSearch = "Estimate!!Total:")
+
+IncomeVars <- CensusVariableSearch(Yr=2021, dataset="acs5", variableCode = NULL, geog_var = "block group", conceptSearch = c("median income"))
+```
+
+This search yields no results, so we try again with just income as a search term.
+
+```{r}
+IncomeVars <- CensusVariableSearch(Yr=2021, dataset="acs5", variableCode = NULL, geog_var = "block group", conceptSearch  = c("income"))
+```
+
+Now we get 450 variables, but by scrolling through I can see that the term I'm looking for is median household income. So we try again with this term (and note that capitalization doesn't matter, but I just copied and pasted this from the table).
+
+```{r}
+IncomeVars <- CensusVariableSearch(Yr=2021, dataset="acs5", variableCode = NULL, geog_var = "block group", conceptSearch  = c("MEDIAN HOUSEHOLD INCOME"))  
+```
+
+I get a much narrower set of variables, and I see that code B19013_001 corresponds with the median household income that is not broken down by age. 
+
+After running this function multiple times I've assembled a list of variables I would like to track, namely, the number of people of each race/ethnicity and the median household income. In the PullCensusData function we can either call census variables directly by their codes, or we can create a named vector of variable names so that the headings that appear in the table are more informative to the user. 
+
+```{r}
+my_vars <- c(
+  total_race = "B02001_001",
+  white_alone = "B02001_002",     
+  black_alone = "B02001_003",
+  Amer_indian = "B02001_004",
+  Asian = "B02001_005",
+  Pacific_islander = "B02001_006",
+  Other_race = "B02001_007",
+  Two_or_more_races = "B02001_008",
+  hispanic_pop = "B03003_003",
+  median_income = "B19013_001"
+)
+```
+
+We are now ready to run the function and get the ACS data
+
+```{r}
+CensusLI_bg <- PullCensusData(EndYr = 2021, acsGeog = "block group", stateList="NY", countyList= LICounties, variableCodes = my_vars, surveyType="acs5", EPSGcode=3857)
+```
+
+We now have counts by race, total population counts, and the median income for all the block groups in these 4 counties, as well as the geometry of the block group polygons which have been projected into the metric coordinate system WGS 84. The getACS function produces estimates (column name with the suffix E) and measures of error (column names with the suffix M).
+
+We also want to pull county level data for Long Island for comparison. This can help us understand if the communities near TRI facilities have different demographic makeups from the county has a whole. Note that you can also use census tract level data for comparison.
+
+```{r}
+Census_county_NY <- PullCensusData(EndYr = 2021, acsGeog = "county", stateList="NY", countyList = LICounties, variableCodes = my_vars, surveyType="acs5", EPSGcode=3857)
+```
+
+## Downloading Risk Screening Environmental Indicators (RSEI) Data
+
+Next we want to obtain the locations of facilities reporting emissions under the Toxic Release Inventory (TRI) program that are in the 4 counties we described, as well as the types of chemicals released and their hazard scores. We can get these from the publicly available RSEI data. There are two ways to access these data. First, we would like to store the data locally for future use since the download can be time consuming, so we will use the GetRSEI function to download and store the most recent data to the folder of our choosing. This can be done with the following code:
+
+```{r}
+DataList <- GetRSEIData(rseiversion = "v2311", savetodisk = T, directory = myworkingdirectory, seconds=500)
+```
+
+Note that in the above code, the 5 RSEI tables downloaded are returned in a list, but are also saved to the directory provided if savetodisk is TRUE. This allows users to then access the files locally for future operations. If the download times out before it is completed, the seconds argument can be extended to provide more time for a slow download.
+
+## Searching the RSEI Database
+
+Users can then search the RSEI files to obtain data on the chemical releases per facility per year using the RSEISearchFunction. If data is stored locally, the RSEISearchFunction can access those files provided they have been saved with the same names they were downloaded with. Alternatively, it is possible to download the data directly as part of the RSEISearchFunction by selecting DownloadRSEI = TRUE and choosing which version of data to obtain ("v2311" or "v2310").
+
+# The RSEISearchFunction is very flexible, with lots of optional arguments to allows users to narrow in on data from the location, time period, industry sector, or facilities they are interested in. Here, we are interested in facilities in the 5 years between 2017 and 2021 (the most recent year of data), in the four counties on Long Island. We want to project the facility locations into the metric WGS 84 coordinate system so that we can overlay facility locations on our census block data, and I want to save the facilty location data and the RSEI data to myworkingdirectory.
+
+```{r}
+LIFacilities <- RSEISearch(DownloadRSEI= F, RSEIpath = paste(myworkingdirectory,"RSEI_Public_Release_Data_V2311_RY2021",sep="/"), RSEIversion="v2311", StartYr=2017, EndYr=2021, State = "NY", County = LICounties, returnLocation = T, projectTo = 3857, wider=TRUE, Filename = "RSEI_LIFacilities", SaveTo = myworkingdirectory)
+```
+
+We can save the 2 objects in the list as dataframes.
+
+```{r}
+LIFacilitiesEmissions <- LIFacilities[[1]]
+glimpse(LIFacilitiesEmissions)
+str(LIFacilitiesEmissions)
+
+
+LI_Facility_locations <- LIFacilities[[2]]
+str(LI_Facility_locations)
+st_crs(LI_Facility_locations)
+```
+
+### Facility or Chem searches
+In the above example we are looking for any TRI Facilities on Long Island, but we could also refine our search by facility name or location, industry, or by chemical. There are two functions, FacilitySearch and ChemSearch, that the RSEISearch function relies on to filter the Facility and Chemical tables. These functions can be used directly to narrow in on particular information stored in those files. 
+
+Say we are interested in the locations of facilities that store crude petroleum in bult (NAICS code 424710). We read in the Facility table, and run the FacilitySearch function to find facilities with that NAICS code.17 different facilities are returned.
+
+```{r}
+setwd(paste(myworkingdirectory,"RSEI_Public_Release_Data_V2311_RY2021",sep="/"))
+Facility <- read.csv("facility_data_rsei_v2311.csv") # has all Facility info
+LIPetroFacilities <- FacilitySearch(Facility, NAICS=c(424710),  statesearch = "NY", countysearch = LICounties, AbbrevOutput = TRUE)
+print(LIPetroFacilities)
+```
+
+We could also look for facilities that release lead. To do this we could first use the ChemicalSearch function to look up how lead is categorized in the RSEI emmissions data. The ChemSearch function will match whole or partial chemical names, and capitalization does not matter. Any row that includes the search term in the name will be returned.
+
+```{r}
+Chems <- read.csv("chemical_data_rsei_v2311.csv")
+Lead <- ChemSearch(Chems,chemnamesearch = "lead", AbbrevOutput = TRUE)
+```
+
+We see that there are two ways that lead can be reported, as lead or lead compounds, each with a different Chemical Number in the RSEI database. So if we want to see the locations and total emissions/hazard scores of facilities that have released lead in the last 5 years, we could pass the RSEISearch function either a vector of the Chemical Numbers 346 and 347, or we could just include the search term "lead" in the argument ChemicalNames. 
+
+```{r}
+LIleadSearch_1 <- RSEISearch(DownloadRSEI= F, RSEIpath = paste(myworkingdirectory,"RSEI_Public_Release_Data_V2311_RY2021",sep="/"), RSEIversion="v2311", StartYr=2017, EndYr=2021, State = "NY", County = LICounties, rsei_Chem_Numbers  = c(346,347), Filename = "Lead1")
+head(LIleadSearch_1)
+
+LIleadSearch_2 <- RSEISearch(DownloadRSEI= F, RSEIpath = paste(myworkingdirectory,"RSEI_Public_Release_Data_V2311_RY2021",sep="/"), RSEIversion="v2311", StartYr=2017, EndYr=2021, State = "NY", County = LICounties, ChemicalNames = "lead",  Filename = "Lead2")
+head(LIleadSearch_2)
+```
+
+## Calculating Community Characteristics via Aerial Apportionment Method
+
+We want to overlay the facility emissions data on the block group level demographic data and determine the make up of communities within 1km, 5km, and 10km of a TRI reporting facility. We want to compare those communities with the county as a whole to determine if communities near TRI facilities are more likely to be non-white or have a lower median income. To do this we can use the CensusBuffer function. We provide a vector of radii for our buffers in meters, the object with projected block group data, and the RSEI facility location information, which is a spatial dataframe (sf object) that contains the facility locations projected to the WGS 84 coordinate system. We are setting runTract to false but runCounty to true because we would like to compare demographics to the total estimates for each of the 4 LI counties, and we provide the projected county ACS data. We also need to provide the vector of ACS variables with their names. Finally, we have the option to provide the rsei emissions dataframe. If this is included, these data are merged into the final output so that each row is a chemical-facility combination, and the columns include the summed emissions and associated scores as well as the demography in each buffer. If this is not provided, the output of this function is a wide format dataframe with a row for each facility and in the columns the tabulated ACS variables within each buffer distance of that facility location. If runTract or runCounty are true, it also includes the county or tract totals for each variable for comparison. 
+
+```{r}
+FinalLIDemos <- CensusBuffer(buffer_vec = c(1000,5000,10000), census_dat_proj= CensusLI_bg, FacilityLocation_m = LI_Facility_locations, runTract = FALSE, tract_dat_proj = NULL, runCounty = TRUE, county_dat_proj = Census_county_NY, variableNames = my_vars, EmissionData = LIFacilitiesEmissions)
+```
