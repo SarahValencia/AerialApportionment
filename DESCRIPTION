@@ -4,7 +4,7 @@ Title: Aerial apportionment of population data to polluting facilities
 Version: 0.1.0
 Authors@R: c(
     person("Sarah", "Valencia", email = "sarah.r.valencia@gmail.com", role = c("aut", "cre")),
-    person("Mary", "Collins", email = "mary.collins@stonybrook.edu", role = "ctb"),
+    person("Mary", "Collins", email = "mary.collins@stonybrook.edu", role = "ctb", comment = "Associate Professor, Stonybrook University"),
     person("Environmental Defense Fund", role = "fnd"))
 Description: Suite of functions for accessing and overlaying Risk Screening Environmental Indicators (RSEI) model data on census data to assess demographics of communities near facilities reporting Toxic Release Inventory (TRI) emissions. These functions are designed to help users access and format American Community Survey data as well as RSEI facility locations and emissions data. Functions are provided to overlay these datasets and draw concentric buffers around facility locations and calculate the proportion of census block groups that fall within these buffers. We use a technique called aerial apportionment to estimate the population of each block group that falls within the buffer and then sum across all block group clips to get the total population of each demographic within a given distance of each TRI facility.
 Imports: dplyr, insight, readxl, sf, stringr, tidycensus, tidyr, tidytext, tidyverse, utils
@@ -12,3 +12,8 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
+URL: https://sarahvalencia.github.io/AerialApportionment/
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
