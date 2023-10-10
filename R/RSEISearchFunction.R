@@ -250,8 +250,8 @@ RSEISearch <- function(DownloadRSEI= TRUE, RSEIpath = NULL, RSEIversion="v2311",
     }# end if projectTo
 
     if(!is.null(SaveTo)){
-      write.csv(tri_locations,"RSEIPull_FacilityLocations.csv",row.names=FALSE)
-      saveRDS(tri_locations, "RSEIPull_FacilityLocations.rds")
+      write.csv(tri_locations,paste(Filename,"_locations_",CurrentDate,".csv",sep=""),row.names=FALSE)
+      saveRDS(tri_locations, paste(Filename,"_locations_",CurrentDate,".rds",sep=""))
     }
 
     # Return list with desired info

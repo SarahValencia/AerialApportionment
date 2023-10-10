@@ -13,7 +13,8 @@ CensusBuffer(
   runCounty = FALSE,
   county_dat_proj = NULL,
   variableNames = NULL,
-  EmissionData = NULL
+  EmissionData = NULL,
+  saveAs = "DemographicsNearTRIFacilities"
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ CensusBuffer(
 \item{variableNames}{An optional vector of variable names, most likely the vector of named variable codes provided to the function PullCensusData.}
 
 \item{EmissionData}{An optional dataframe of emissions/RSEI score information if the user would like this merged into the demographic tabulation results. This should be the output of the RSEISearch function.}
+
+\item{saveAs}{A character string specifying the name you would like the output file saved under. Defaults to "DemographicsNearTRIFacilities".}
 }
 \value{
 A wide format dataframe. If EmissionsData are included, these data are merged into the final output so that each row is a chemical-facility combination, and the columns include the summed emissions and associated scores as well as the demography in each buffer. If EmissionsData is not included, the output of this function is a wide format dataframe with a row for each facility and in the columns the tabulated ACS variables within each buffer distance of that facility location. If runTract or runCounty are true, it also includes the county or tract totals for each variable for comparison. Counts of the number of TRI facilities within the buffer/tract/county are also included.

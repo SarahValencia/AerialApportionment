@@ -24,13 +24,15 @@
 #'
 #' @param EmissionData An optional dataframe of emissions/RSEI score information if the user would like this merged into the demographic tabulation results. This should be the output of the RSEISearch function.
 #'
+#' @param saveAs A character string specifying the name you would like the output file saved under. Defaults to "DemographicsNearTRIFacilities".
+#'
 #' @returns A wide format dataframe. If EmissionsData are included, these data are merged into the final output so that each row is a chemical-facility combination, and the columns include the summed emissions and associated scores as well as the demography in each buffer. If EmissionsData is not included, the output of this function is a wide format dataframe with a row for each facility and in the columns the tabulated ACS variables within each buffer distance of that facility location. If runTract or runCounty are true, it also includes the county or tract totals for each variable for comparison. Counts of the number of TRI facilities within the buffer/tract/county are also included.
 #'
 #'
 #'
 #' @export
 
-CensusBuffer <- function(buffer_vec, census_dat_proj, FacilityLocation_m, runTract = FALSE, tract_dat_proj = NULL,runCounty = FALSE, county_dat_proj = NULL, variableNames = NULL, EmissionData = NULL){
+CensusBuffer <- function(buffer_vec, census_dat_proj, FacilityLocation_m, runTract = FALSE, tract_dat_proj = NULL,runCounty = FALSE, county_dat_proj = NULL, variableNames = NULL, EmissionData = NULL, saveAs = "DemographicsNearTRIFacilities"){
 
   # calculate the area of each block group in m^2 - only needs to happen once
   census_dat_proj$BG_area <- st_area(census_dat_proj)
@@ -181,9 +183,9 @@ CensusBuffer <- function(buffer_vec, census_dat_proj, FacilityLocation_m, runTra
 
 
   Final <- df.list %>% reduce(left_join,by="FacilityID")
-
-  saveRDS(Final, file = "DemographicImpactsofTRI.rds")
-  write.csv(Final,"DemographicImpactsofTRI.csv",row.names=FALSE)
+  CurrDate <- Sys.Date()
+  saveRDS(Final, file = paste(saveAs,"_",CurrDate,".rds", sep=""))
+  write.csv(Final,paste(saveAs,"_",CurrDate,".csv", sep=""),row.names=FALSE)
 
   return(Final)
 

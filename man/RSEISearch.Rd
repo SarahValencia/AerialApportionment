@@ -77,14 +77,14 @@ There is also an option to return a second dataframe that contains the location 
 This function allows users to access the EPAs' Risk-Screening Environmental Indicators (RSEI) Model database in order to obtain information on the total releases per facility per year, as well as the associated modeled risk and hazard scores. Users can search for specific time periods, facilities, or chemicals.
 }
 \details{
-The RSEI database includes data from the federally managed Toxic Release Inventory (TRI) program on over 25,000 facilities reporting hazardous emissions since the 1980s, as well as risk scores that account for the size of the chemical release, the fate and transport of the chemical through the environment, the size and location of the exposed population, and the chemical's toxicity. The aggregated version of these data is available for download on the RSEI website. The data are spread out over different tables, with crosswalks between them to link facilities and chemicals to emmissions data at the release level. This function allows users to either read in these tables if they have already been downloaded, or to download the necessary files, and then knits the tables together and filters them based on the search criteria provided to the function. These search criteria allow users to narrow these vast tables to specific years, chemicals, facility locations or types. 
+The RSEI database includes data from the federally managed Toxic Release Inventory (TRI) program on over 25,000 facilities reporting hazardous emissions since the 1980s, as well as risk scores that account for the size of the chemical release, the fate and transport of the chemical through the environment, the size and location of the exposed population, and the chemical's toxicity. The aggregated version of these data is available for download on the RSEI website. The data are spread out over different tables, with crosswalks between them to link facilities and chemicals to emmissions data at the release level. This function allows users to either read in these tables if they have already been downloaded, or to download the necessary files, and then knits the tables together and filters them based on the search criteria provided to the function. These search criteria allow users to narrow these vast tables to specific years, chemicals, facility locations or types.
 
 This function uses the function GetRSEIData to download and unzip the five csv files (Facility, Chemical, Submission, Releases, and Elements) necessary to calculate the summed releases per facility per year of each chemical. Users can also point the function to where these csv files have been saved. The function requires files to have the names they were downloaded with.
 }
 \examples{
 #Download RSEI tables and find yearly releases for all chemicals released by the Ritepack Inc.
 
-RitePack <- RSEISearch(DownloadRSEI = TRUE, RSEIversion="v2310",  FacilityName = NULL, 
+RitePack <- RSEISearch(DownloadRSEI = TRUE, RSEIversion="v2310",  FacilityName = NULL,
 Facility_ID_vec = "66024KMGBR52S15",  Filename = "RSEITest4", wider = FALSE)
 
 }
