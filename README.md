@@ -1,5 +1,4 @@
-# AerialApportionment
-Aerial Apportionment R Package - Functions for assigning populations to polluting facilities
+# Aerial Apportionment R Package - Functions for assigning populations to polluting facilities
 
 This package was developed to help users assess the characteristics of communities that live near facilities that emit toxic chemicals, and to determine the risks they may face due to this proximity. 
 

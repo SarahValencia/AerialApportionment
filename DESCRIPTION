@@ -1,7 +1,7 @@
 Package: AerialApportionment
 Type: Package
 Title: Aerial apportionment of population data to polluting facilities
-Version: 0.1.0
+Version: 1.0.0
 Authors@R: c(
     person("Sarah", "Valencia", email = "sarah.r.valencia@gmail.com", role = c("aut", "cre")),
     person("Mary", "Collins", email = "mary.collins@stonybrook.edu", role = "ctb", comment = "Associate Professor, Stonybrook University"),

@@ -20,7 +20,9 @@
 #'
 #' @param county_dat_proj = A spatial dataframe (sf object) of ACS data at the countylevel, projected into a metric coordinate system. This should be the output of the PullCensusData function with a geography of "county".
 #'
-#' @param variableNames An optional vector of variable names, most likely the vector of named variable codes provided to the function PullCensusData.
+#' @param variableNames A vector of variable names specifying the variables pulled in the PullCensusData function. These are the column names for the variables in the
+#'
+#' @param PopVariable A logical vector the length of variableNames specifying which variables are population variables (1) and which are other types of variables (0). This lets the function know which variables should be multiplied by the proportion of block group area in each buffer, and which should be summarized using the mean value for the block group.
 #'
 #' @param EmissionData An optional dataframe of emissions/RSEI score information if the user would like this merged into the demographic tabulation results. This should be the output of the RSEISearch function.
 #'
@@ -32,7 +34,7 @@
 #'
 #' @export
 
-CensusBuffer <- function(buffer_vec, census_dat_proj, FacilityLocation_m, runTract = FALSE, tract_dat_proj = NULL,runCounty = FALSE, county_dat_proj = NULL, variableNames = NULL, EmissionData = NULL, saveAs = "DemographicsNearTRIFacilities"){
+CensusBuffer <- function(buffer_vec, census_dat_proj, FacilityLocation_m, runTract = FALSE, tract_dat_proj = NULL,runCounty = FALSE, county_dat_proj = NULL, variableNames = NULL, PopVariable = NULL, EmissionData = NULL, saveAs = "DemographicsNearTRIFacilities"){
 
   # calculate the area of each block group in m^2 - only needs to happen once
   census_dat_proj$BG_area <- st_area(census_dat_proj)
@@ -59,8 +61,8 @@ CensusBuffer <- function(buffer_vec, census_dat_proj, FacilityLocation_m, runTra
 
 
     #BG_clip <- st_intersection(census_dat_proj, tri_buffer, warn=F) #warning because         function assumes attribute data associated with geographic pts is constant, but        TRI data only has geometry, no other attributes 9434 bg in first buffer
-
-    BG_clip <- st_intersection(tri_buffer, census_dat_proj, left = TRUE)
+    BG_clip <- st_intersection(tri_buffer, census_dat_proj)
+    #BG_clip <- st_intersection(tri_buffer, census_dat_proj, left = TRUE)
 
     # area of each clip and store as an attribute
     BG_clip$area_clip <- st_area(BG_clip)
@@ -69,22 +71,27 @@ CensusBuffer <- function(buffer_vec, census_dat_proj, FacilityLocation_m, runTra
     BG_clip$area_prop <- BG_clip$area_clip / BG_clip$BG_area
 
     # Figure out which columns are Estimates (to keep), and which have a median dollar value (not multiplied by area)
-    columnnames <- paste(names(my_vars),"E",sep="")
-    dropcols <- paste(names(my_vars),"M",sep="")
+    columnnames <- paste(names(variableNames),"E",sep="")
+    dropcols <- paste(names(variableNames),"M",sep="")
 
     # Drop MOE cols
     BG_clip_edit <- BG_clip %>% select(-any_of(dropcols))
 
-    # determine number of columns to multiply by
-    txt<-tibble(line=1:length(columnnames),names=columnnames)
-    tidy_txt<- tidytext::unnest_tokens(tbl=txt, output = word, input=names,token=stringr::str_split, pattern = "_")
-    # Find the lines with the search terms
-    Indextbl <- tidy_txt %>% filter(word %in% "median")
-    DollarCols <- Indextbl$line + 2 #First 2 are GEOID and Names
+    # Use PopVariable to figure out which columns to sum
+
+    SumCols <- columnnames[which(PopVariable == 1)]
+    MeanCols <- columnnames[which(PopVariable == 0)]
+
+    # # determine number of columns to multiply by
+    # txt<-tibble(line=1:length(columnnames),names=columnnames)
+    # tidy_txt<- tidytext::unnest_tokens(tbl=txt, output = word, input=names,token=stringr::str_split, pattern = "_")
+    # # Find the lines with the search terms
+    # Indextbl <- tidy_txt %>% filter(word %in% "median")
+    # DollarCols <- Indextbl$line + 2 #First 2 are GEOID and Names
 
     ## save names of diff kinds of variables
-    SumCols <- columnnames[-Indextbl$line]
-    MeanCols <- columnnames[Indextbl$line]
+    # SumCols <- columnnames[-Indextbl$line]
+    # MeanCols <- columnnames[Indextbl$line]
 
     ## Use across command to multiply proportion area by population
     BG_clip_df <- BG_clip_edit %>%

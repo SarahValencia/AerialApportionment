@@ -13,6 +13,7 @@ CensusBuffer(
   runCounty = FALSE,
   county_dat_proj = NULL,
   variableNames = NULL,
+  PopVariable = NULL,
   EmissionData = NULL,
   saveAs = "DemographicsNearTRIFacilities"
 )
@@ -32,7 +33,9 @@ CensusBuffer(
 
 \item{county_dat_proj}{= A spatial dataframe (sf object) of ACS data at the countylevel, projected into a metric coordinate system. This should be the output of the PullCensusData function with a geography of "county".}
 
-\item{variableNames}{An optional vector of variable names, most likely the vector of named variable codes provided to the function PullCensusData.}
+\item{variableNames}{A vector of variable names specifying the variables pulled in the PullCensusData function. These are the column names for the variables in the}
+
+\item{PopVariable}{A logical vector the length of variableNames specifying which variables are population variables (1) and which are other types of variables (0). This lets the function know which variables should be multiplied by the proportion of block group area in each buffer, and which should be summarized using the mean value for the block group.}
 
 \item{EmissionData}{An optional dataframe of emissions/RSEI score information if the user would like this merged into the demographic tabulation results. This should be the output of the RSEISearch function.}
 
