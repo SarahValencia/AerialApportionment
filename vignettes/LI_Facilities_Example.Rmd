@@ -10,6 +10,7 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  eval = FALSE,
   comment = "#>"
 )
 ```
@@ -110,7 +111,7 @@ head(Census_county_NY)
 
 Next we want to obtain the locations of facilities reporting emissions under the Toxic Release Inventory (TRI) program that are in the 4 counties we described, as well as the types of chemicals released and their hazard scores. We can get these from the publicly available RSEI data. There are two ways to access these data. First, we would like to store the data locally for future use since the download can be time consuming, so we will use the GetRSEI function to download and store the most recent data to the folder of our choosing. This can be done with the following code:
 
-```{r}
+```{r,eval=FALSE}
 myworkingdirectory <- getwd()
 DataList <- GetRSEIData(rseiversion = "v2311", savetodisk = T, directory = myworkingdirectory, seconds=500)
 ```
