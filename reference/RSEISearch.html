@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">AerialApportionment</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,6 +20,12 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/LI_Facilities_Example.html">Using Aerial Apportionment to Assess Community Composition Near TRI Facilities: Long Island</a>
+  </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -167,7 +173,7 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#Download RSEI tables and find yearly releases for all chemicals released by the Ritepack Inc.</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">RitePack</span> <span class="op">&lt;-</span> <span class="fu">RSEISearch</span><span class="op">(</span>DownloadRSEI <span class="op">=</span> <span class="cn">TRUE</span>, RSEIversion<span class="op">=</span><span class="st">"v2310"</span>,  FacilityName <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
+<span class="r-in"><span><span class="va">RitePack</span> <span class="op">&lt;-</span> <span class="fu">RSEISearch</span><span class="op">(</span>DownloadRSEI <span class="op">=</span> <span class="cn">TRUE</span>, RSEIversion<span class="op">=</span><span class="st">"v2310"</span>,  FacilityName <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>Facility_ID_vec <span class="op">=</span> <span class="st">"66024KMGBR52S15"</span>,  Filename <span class="op">=</span> <span class="st">"RSEITest4"</span>, wider <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>URL 'https://gaftp.epa.gov/rsei/Older_Versions/Version2310_RY2020/Public_Release_Data/RSEIv2310_Public_Release_Data.zip': status was 'SSL peer certificate or SSH remote key was not OK'</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in download.file("https://gaftp.epa.gov/rsei/Older_Versions/Version2310_RY2020/Public_Release_Data/RSEIv2310_Public_Release_Data.zip",     temp, quiet = FALSE):</span> cannot open URL 'https://gaftp.epa.gov/rsei/Older_Versions/Version2310_RY2020/Public_Release_Data/RSEIv2310_Public_Release_Data.zip'</span>

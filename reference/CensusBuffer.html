@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">AerialApportionment</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,6 +20,12 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/LI_Facilities_Example.html">Using Aerial Apportionment to Assess Community Composition Near TRI Facilities: Long Island</a>
+  </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -51,7 +57,9 @@
 <span>  runCounty <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  county_dat_proj <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  variableNames <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  EmissionData <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  PopVariable <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  EmissionData <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  saveAs <span class="op">=</span> <span class="st">"DemographicsNearTRIFacilities"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -86,11 +94,19 @@
 
 
 <dt>variableNames</dt>
-<dd><p>An optional vector of variable names, most likely the vector of named variable codes provided to the function PullCensusData.</p></dd>
+<dd><p>A vector of variable names specifying the variables pulled in the PullCensusData function. These are the column names for the variables in the</p></dd>
+
+
+<dt>PopVariable</dt>
+<dd><p>A logical vector the length of variableNames specifying which variables are population variables (1) and which are other types of variables (0). This lets the function know which variables should be multiplied by the proportion of block group area in each buffer, and which should be summarized using the mean value for the block group.</p></dd>
 
 
 <dt>EmissionData</dt>
 <dd><p>An optional dataframe of emissions/RSEI score information if the user would like this merged into the demographic tabulation results. This should be the output of the RSEISearch function.</p></dd>
+
+
+<dt>saveAs</dt>
+<dd><p>A character string specifying the name you would like the output file saved under. Defaults to "DemographicsNearTRIFacilities".</p></dd>
 
 </dl></div>
     <div class="section level2">

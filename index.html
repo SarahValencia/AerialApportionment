@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="index.html">AerialApportionment</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,6 +37,12 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
   <a class="nav-link" href="reference/index.html">Reference</a>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="articles/LI_Facilities_Example.html">Using Aerial Apportionment to Assess Community Composition Near TRI Facilities: Long Island</a>
+  </div>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -51,15 +57,31 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="aerialapportionment">AerialApportionment<a class="anchor" aria-label="anchor" href="#aerialapportionment"></a>
+<div class="page-header"><h1 id="aerial-apportionment-r-package---functions-for-assigning-populations-to-polluting-facilities">Aerial Apportionment R Package - Functions for assigning populations to polluting facilities<a class="anchor" aria-label="anchor" href="#aerial-apportionment-r-package---functions-for-assigning-populations-to-polluting-facilities"></a>
 </h1></div>
-<p>Aerial Apportionment R Package - Functions for assigning populations to polluting facilities</p>
+<p>This package was developed to help users assess the characteristics of communities that live near facilities that emit toxic chemicals, and to determine the risks they may face due to this proximity.</p>
+<div class="section level2">
+<h2 id="accessing-publicly-available-datasets">Accessing Publicly Available Datasets<a class="anchor" aria-label="anchor" href="#accessing-publicly-available-datasets"></a>
+</h2>
+<p>The data necessary to perform these operations comes from publicly available datasets. Emissions information is sourced from the EPAs Risk Screening Environmental Indicators (RSEI) database, which includes data from the federally managed Toxic Release Inventory (TRI) program on over 25,000 facilities reporting hazardous emissions since the 1980s, as well as risk scores that account for the size of the chemical release, the fate and transport of the chemical through the environment, the size and location of the exposed population, and the chemical’s toxicity. Population information comes from the American Community Survey (ACS) at the Census Block Group-level. This package contains a suite of functions to access and organize these data, and to perform the spatial manipulations necessary to determine which demographics may be impacted by TRI facilities.</p>
+</div>
+<div class="section level2">
+<h2 id="what-is-aerial-apportionment">What is Aerial Apportionment?<a class="anchor" aria-label="anchor" href="#what-is-aerial-apportionment"></a>
+</h2>
+<p>Impacts are calculated using a method called aerial apportionment, in which circular polygons, or buffers, are drawn around each facility and overlaid on census data at the block group level. The population is weighted by the proportion of the area of the block group that is captured by the circle. The weighted populations of these units are then used to determine the aggregate demographic characteristics of perfectly circular neighborhoods within each buffer.</p>
+</div>
+<div class="section level2">
+<h2 id="getting-started">Getting Started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
+</h2>
+<p>Please see the vignette showing how these functions can be used to assess facilities reporting TRI emissions on Long Island, and the community characteristics around those facilities.</p>
+</div>
 </div>
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li>
+<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
+</li>
 </ul>
 </div>
 
