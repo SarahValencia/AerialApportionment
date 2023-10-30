@@ -3,7 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   LI_Facilities_Example: LI_Facilities_Example.html
-last_built: 2023-10-26T01:27Z
+last_built: 2023-10-30T17:34Z
 urls:
   reference: https://sarahvalencia.github.io/AerialApportionment/reference
   article: https://sarahvalencia.github.io/AerialApportionment/articles
