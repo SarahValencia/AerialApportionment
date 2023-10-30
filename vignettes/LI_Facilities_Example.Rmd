@@ -1,8 +1,8 @@
 ---
-title: "Using Aerial Apportionment to Assess Community Composition Near TRI Facilities: Long Island"
+title: "Using Areal Apportionment to Assess Community Composition Near TRI Facilities: Long Island"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using Aerial Apportionment to Assess Community Composition Near TRI Facilities: Long Island}
+  %\VignetteIndexEntry{Using Areal Apportionment to Assess Community Composition Near TRI Facilities: Long Island}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(AerialApportionment)
+library(ArealApportionment)
 library(dplyr)
 library(sf)
 library(purrr)
@@ -174,7 +174,7 @@ glimpse(LIleadSearch_1)
 
 ```
 
-## Calculating Community Characteristics via Aerial Apportionment Method
+## Calculating Community Characteristics via Areal Apportionment Method
 
 We want to overlay the facility emissions data on the block group level demographic data and determine the make up of communities within 1km, 5km, and 10km of a TRI reporting facility. We want to compare those communities with the county as a whole to determine if communities near TRI facilities are more likely to be non-white or have a lower median income. To do this we can use the CensusBuffer function. We provide a vector of radii for our buffers in meters, the object with projected block group data, and the RSEI facility location information, which is a spatial dataframe (sf object) that contains the facility locations projected to the WGS 84 coordinate system. We are setting runTract to false but runCounty to true because we would like to compare demographics to the total estimates for each of the 4 LI counties, and we provide the projected county ACS data. We also need to provide the vector of ACS variables with their names. Finally, we have the option to provide the rsei emissions dataframe. If this is included, these data are merged into the final output so that each row is a chemical-facility combination, and the columns include the summed emissions and associated scores as well as the demography in each buffer. If this is not provided, the output of this function is a wide format dataframe with a row for each facility and in the columns the tabulated ACS variables within each buffer distance of that facility location. If runTract or runCounty are true, it also includes the county or tract totals for each variable for comparison. 
 
